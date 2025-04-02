@@ -3,7 +3,7 @@ from controllers.user_controller import UserController
 
 user_bp = Blueprint('user', __name__)
 
-user_bp.route('/', methods=['POST'])(UserController.create_user)
+user_bp.route("/register", methods=["POST"])(UserController.register)
 
 user_bp.route('/<int:user_id>', methods=['GET'])(UserController.get_user)
 

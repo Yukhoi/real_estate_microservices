@@ -45,3 +45,13 @@ class UserController:
             }), 200
         except NotFound:
             return jsonify({"error": f"User with ID {user_id} not found"}), 404
+        
+    @staticmethod
+    def register():
+        data = request.get_json()
+        if UserService.get_user_by_email(data.get('email')):
+            return jsonify({"message": "Email already exists"}), 400
+        user = UserService.create_user(data)
+        return jsonify({"message": "User created", "id": user.id}), 201
+    
+    
