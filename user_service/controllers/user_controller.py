@@ -6,13 +6,6 @@ from werkzeug.exceptions import NotFound
 class UserController:
     
     @staticmethod
-    @validate_body(['first_name', 'last_name', 'birth_date'])
-    def create_user():
-        data = request.get_json()
-        user = UserService.create_user(data)
-        return jsonify({"message": "User created", "id": user.id}), 201
-    
-    @staticmethod
     def get_user(user_id):
         try:
           user = UserService.get_user_by_id(user_id)
@@ -47,6 +40,7 @@ class UserController:
             return jsonify({"error": f"User with ID {user_id} not found"}), 404
         
     @staticmethod
+    @validate_body(['first_name', 'last_name', 'birth_date','email', 'password'])
     def register():
         data = request.get_json()
         if UserService.get_user_by_email(data.get('email')):

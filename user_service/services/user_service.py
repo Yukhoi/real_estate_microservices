@@ -6,6 +6,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class UserService:
 
     @staticmethod
+    def hash_password(password):
+        return generate_password_hash(password)
+
+    @staticmethod
+    def check_password(user, password):
+        return check_password_hash(user.hashed_password, password)
+
+    @staticmethod
     def create_user(data):
         with current_app.app_context():
             user = User(
@@ -13,7 +21,7 @@ class UserService:
                 last_name=data.get('last_name'),
                 birth_date=data.get('birth_date'),
                 email=data.get('email'),
-                hashed_password=hash_password(data.get('password'))
+                hashed_password=UserService.hash_password(data.get('password'))
             )
             
             db.session.add(user)
@@ -47,11 +55,3 @@ class UserService:
             db.session.delete(user)
             db.session.commit()
             return {"message": "User deleted"}
-        
-    @staticmethod
-    def hash_password(password):
-        return generate_password_hash(password)
-
-    @staticmethod
-    def check_password(user, password):
-        return check_password_hash(user.hashed_password, password)

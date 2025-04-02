@@ -1,6 +1,7 @@
 from functools import wraps
 from flask import request, jsonify
 from datetime import datetime
+import re
 
 def validate_body(required_fields):
     def decorator(func):
@@ -19,6 +20,11 @@ def validate_body(required_fields):
                   datetime.strptime(data["birth_date"], "%Y-%m-%d")
               except ValueError:
                   return jsonify({"error": "Invalid date format for 'birth_date'. Expected format: YYYY-MM-DD"}), 400
+              
+            if "email" in data:
+                email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+                if not re.match(email_regex, data["email"]):
+                    return jsonify({"error": "Invalid email format"}), 400            
 
             return func(*args, **kwargs)
         return wrapper
