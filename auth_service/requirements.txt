@@ -1,0 +1,4 @@
+Flask
+Flask-Redis
+Flask-JWT-Extended
+redis
