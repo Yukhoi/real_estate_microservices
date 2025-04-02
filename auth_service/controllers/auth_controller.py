@@ -5,12 +5,11 @@ class AuthController:
 
     @staticmethod
     def login():
-        """处理用户登录请求"""
         data = request.get_json()
-        username = data.get("username")
+        email = data.get("email")
         password = data.get("password")
-
-        user = AuthService.authenticate_user(username, password)
+        print("email", email)
+        user = AuthService.authenticate_user(email, password)
         if not user:
             return jsonify({"message": "Invalid credentials"}), 401
         
@@ -21,7 +20,6 @@ class AuthController:
 
     @staticmethod
     def verify_token():
-        """验证 Token 是否有效"""
         token = request.headers.get("Authorization").split()[1]
         user_data = AuthService.get_user_data_from_redis(token)
 
