@@ -9,7 +9,7 @@ class Property(db.Model):
     property_type = db.Column(db.String(50), nullable=False)
     city = db.Column(db.String(50), nullable=False)
     rooms = db.Column(db.Integer, nullable=False)
-    owner_id = db.Column(db.Integer, nullable=False)  # 关联 owner
+    owner_id = db.Column(db.Integer, nullable=False)  
 
     def to_dict(self):
         return {
