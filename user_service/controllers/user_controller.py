@@ -54,15 +54,11 @@ class UserController:
     def bind_city(user_id):
         data = request.get_json()
         city = data.get('city')
-
-        print(f"Binding city {city} to user {user_id}", flush=True)
         
         user = UserService.get_user_by_id(user_id)
         if not user:
             return jsonify({"error": "User not found"}), 404
-        
-        print(f"Binding city {city} to user {user_id}", flush=True)
-        
+                
         update_data = {"city": city}
         UserService.update_user(user_id, update_data)
         

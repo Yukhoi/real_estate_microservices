@@ -61,7 +61,6 @@ class UserService:
             user.birth_date = data.get('birth_date', user.birth_date)
             user.city = data.get('city', user.city)
             db.session.commit()
-            print(f"User {user_id} updated successfully.", flush=True)
             return user_id
 
     @staticmethod
