@@ -3,11 +3,13 @@ from models.property import Property
 from models.room import Room
 from models.db import db
 from sqlalchemy.orm import joinedload
+from middlewares.property_middleware import jwt_required_middleware
 
 
 class PropertyService:
 
     @staticmethod
+    @jwt_required_middleware
     def search_property(city, token):
         
         user_information = PropertyService.verify_token(token)
@@ -38,6 +40,7 @@ class PropertyService:
         return result, 200
         
     @staticmethod
+    @jwt_required_middleware
     def update_property(property_id, property_data, token):
         
         user_information = PropertyService.verify_token(token)
@@ -81,6 +84,7 @@ class PropertyService:
         return property.to_dict(), 200
     
     @staticmethod
+    @jwt_required_middleware
     def create_property(property_data, token):
         user_information = PropertyService.verify_token(token)
 
