@@ -8,8 +8,15 @@ from sqlalchemy.orm import joinedload
 class PropertyService:
 
     @staticmethod
-    def search_property(city, user_id):
-        user_city = PropertyService.get_user_city(user_id)
+    def search_property(city, token):
+        
+        user_information = PropertyService.verify_token(token)
+
+        if "error" in user_information:
+            return user_information, 403
+        
+        user_city = user_information.get("city")
+
         if user_city:
             if user_city.lower() != city.lower():
                 return {"error": f"You can only view properties in {user_city}"}, 403

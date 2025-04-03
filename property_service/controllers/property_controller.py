@@ -11,13 +11,16 @@ class PropertyController:
 
     @staticmethod
     def search_property():
-        user_id = request.args.get("user_id", type=int)
         city = request.args.get("city", type=str)
 
-        if not user_id or not city:
-            return jsonify({"error": "User ID and city are required"}), 400
+        token = request.headers.get("Authorization").split()[1]
+        if not token:
+            return jsonify({"error": "JWT token is required"}), 401
 
-        response, status_code = PropertyService.search_property(city, user_id)
+        if not city:
+            return jsonify({"error": "city are required"}), 400
+
+        response, status_code = PropertyService.search_property(city, token)
         return jsonify(response), status_code
 
     @staticmethod

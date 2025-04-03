@@ -90,6 +90,7 @@ def on_request(ch, method, props, body):
                     "hashed_password": user.hashed_password,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
+                    "city": user.city
                 }
             else:
                 response = {"error": "User not found"}
