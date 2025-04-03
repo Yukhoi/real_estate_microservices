@@ -43,8 +43,10 @@ This project is a microservices-based application for managing real estate prope
 
 1. **Clone the Repository**:
  
-  `git clone https://github.com/Yukhoi/real_estate_microservices.git`
-  `cd real_estate_microservices`
+  ```
+  git clone https://github.com/Yukhoi/real_estate_microservices.git
+  cd real_estate_microservices
+  ```
 
 2. **Run the services**: Use Docker Compose to build and run the services:
 
@@ -52,8 +54,10 @@ This project is a microservices-based application for managing real estate prope
 
 3. **Seed the Database**: Run the seeds.py script in another terminal to populate the database with initial data.
 
-  `docker exec -it user_service python seeds.py `
-  `docker exec -it property_service python seeds.py`
+  ```
+  docker exec -it user_service python seeds.py 
+  docker exec -it property_service python seeds.py
+  ```
 
 ## API Endpoints
 
