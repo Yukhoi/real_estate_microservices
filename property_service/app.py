@@ -2,12 +2,15 @@ from flask import Flask
 from config import Config
 from models.db import db
 from routes.property_routes import property_bp
+from flask_jwt_extended import JWTManager
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
     db.init_app(app)
+
+    jwt = JWTManager(app)
 
     app.register_blueprint(property_bp, url_prefix='/properties')
 
