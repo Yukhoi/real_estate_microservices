@@ -54,7 +54,6 @@ class UserService:
     @staticmethod
     def update_user(user_id, data):
         with current_app.app_context():
-            print(f"Updating user {user_id} with data: {data}", flush=True)
             user = User.query.get_or_404(user_id)
             user.first_name = data.get('first_name', user.first_name)
             user.last_name = data.get('last_name', user.last_name)
