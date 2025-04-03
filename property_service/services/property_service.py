@@ -23,7 +23,7 @@ class PropertyService:
             if user_city.lower() != city.lower():
                 return {"error": f"You can only view properties in {user_city}"}, 403
         else:
-            bind_city_response, status_code = PropertyService.bind_city_to_user(user_id, city)
+            bind_city_response, status_code = PropertyService.bind_city_to_user(user_information.get("id"), city)
             if status_code != 200:
                 return {"error": "Failed to bind city"}, 500
 
