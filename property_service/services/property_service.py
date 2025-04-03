@@ -9,7 +9,6 @@ class PropertyService:
 
     @staticmethod
     def search_property(city, user_id):
-        print(f"Searching properties in {city} for user {user_id}", flush=True)
         user_city = PropertyService.get_user_city(user_id)
         if user_city:
             if user_city.lower() != city.lower():
@@ -50,16 +49,69 @@ class PropertyService:
             property.name = property_data.get("name", property.name)
         if "description" in property_data:
             property.description = property_data.get("description", property.description)
-        if "type" in property_data:        
-            property.type = property_data.get("type", property.type)
+        if "property_type" in property_data:        
+            property.property_type = property_data.get("property_type", property.property_type)
         if "city" in property_data:
             property.city = property_data.get("city", property.city)
+
         if "rooms" in property_data:
-            property.rooms = property_data.get("rooms", property.rooms)
+          for room_data in property_data["rooms"]:
+              room_id = room_data.get("id")
+              if room_id:
+                  room = Room.query.get(room_id)
+                  if room and room.property_id == property_id:
+                      room.name = room_data.get("name", room.name)
+                      room.size = room_data.get("size", room.size)
+              else:
+                  new_room = Room(
+                      name=room_data["name"],
+                      size=room_data["size"],
+                      property_id=property_id
+                  )
+                  db.session.add(new_room)
 
         db.session.commit()
         return property.to_dict(), 200
     
+    @staticmethod
+    def create_property(property_data, token):
+        user_information = PropertyService.verify_token(token)
+
+        if "error" in user_information:
+            return user_information, 403
+        
+        property = Property(
+            name=property_data.get("name"),
+            description=property_data.get("description"),
+            property_type=property_data.get("property_type"),
+            city=property_data.get("city"),
+            owner_id=user_information.get("id")
+        )
+
+        new_property = Property(
+          name=property_data.get("name"),
+          description=property_data.get("description"),
+          property_type=property_data.get("property_type"),
+          city=property_data.get("city"),
+          owner_id=user_information.get("id")
+        )
+
+        db.session.add(new_property)
+        db.session.flush()
+        
+        if "rooms" in property_data:
+          for room_data in property_data["rooms"]:
+              new_room = Room(
+                  name=room_data.get("name"),
+                  size=room_data.get("size"),
+                  property_id=new_property.id
+              )
+              db.session.add(new_room)
+
+        db.session.commit()
+        
+        return new_property.to_dict(), 201 
+       
     @staticmethod
     def verify_token(token):
         user_service_url = f"http://auth_service:5002/auth/verify"

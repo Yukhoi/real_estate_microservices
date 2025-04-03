@@ -32,5 +32,18 @@ class PropertyController:
         
         response, status_code = PropertyService.update_property(property_id, property_data, token)
         return jsonify(response), status_code
+    
+    @staticmethod
+    def create_property():
+        token = request.headers.get("Authorization").split()[1]
+        if not token:
+            return jsonify({"error": "JWT token is required"}), 401
+
+        property_data = request.get_json()
+        if not property_data:
+            return jsonify({"error": "Property data is required"}), 400
+        
+        response, status_code = PropertyService.create_property(property_data, token)
+        return jsonify(response), status_code
         
         
