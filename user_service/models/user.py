@@ -9,3 +9,4 @@ class User(db.Model):
     birth_date = db.Column(db.String(10), nullable=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     hashed_password = db.Column(db.String(256), nullable=False) 
+    city = db.Column(db.String(50), nullable=True)

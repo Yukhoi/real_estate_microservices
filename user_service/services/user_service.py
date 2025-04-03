@@ -54,11 +54,14 @@ class UserService:
     @staticmethod
     def update_user(user_id, data):
         with current_app.app_context():
+            print(f"Updating user {user_id} with data: {data}", flush=True)
             user = User.query.get_or_404(user_id)
             user.first_name = data.get('first_name', user.first_name)
             user.last_name = data.get('last_name', user.last_name)
             user.birth_date = data.get('birth_date', user.birth_date)
+            user.city = data.get('city', user.city)
             db.session.commit()
+            print(f"User {user_id} updated successfully.", flush=True)
             return user_id
 
     @staticmethod
@@ -70,13 +73,13 @@ class UserService:
             return {"message": "User deleted"}
         
 def on_request(ch, method, props, body):
-    from app import create_app  # 确保可以创建 Flask 应用
+    from app import create_app 
     app = create_app()
 
     data = json.loads(body)
     response = {}
 
-    with app.app_context():  # 激活 Flask 应用上下文
+    with app.app_context():  
         if data['action'] == 'get_user_by_email':
             email = data['email']
             user = User.query.filter_by(email=email).first()
