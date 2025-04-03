@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from services.property_service import PropertyService
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 class PropertyController:
     def __init__(self, property_service):
@@ -19,9 +20,17 @@ class PropertyController:
         response, status_code = PropertyService.search_property(city, user_id)
         return jsonify(response), status_code
 
+    @staticmethod
+    def update_property(property_id):
+        token = request.headers.get("Authorization").split()[1]
+        if not token:
+            return jsonify({"error": "JWT token is required"}), 401
 
-    def update_property(self, property_id, property_data):
-        return self.property_service.update_property(property_id, property_data)
-
-    def delete_property(self, property_id):
-        return self.property_service.delete_property(property_id)
+        property_data = request.get_json()
+        if not property_data:
+            return jsonify({"error": "Property data is required"}), 400
+        
+        response, status_code = PropertyService.update_property(property_id, property_data, token)
+        return jsonify(response), status_code
+        
+        

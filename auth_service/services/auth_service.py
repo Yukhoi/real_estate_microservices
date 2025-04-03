@@ -59,7 +59,11 @@ class AuthService:
 
     @staticmethod
     def create_access_token(user_data):
-        return create_access_token(identity=user_data['email'], fresh=True)
+        identity = {
+            "id": user_data["id"],
+            "email": user_data["email"]
+        }
+        return create_access_token(identity=identity, fresh=True)
 
     @staticmethod
     def store_token_in_redis(token, user_data):

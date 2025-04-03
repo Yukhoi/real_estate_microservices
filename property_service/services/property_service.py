@@ -1,6 +1,6 @@
-from flask import jsonify, request
 import requests
 from models.property import Property
+from models.db import db
 
 
 class PropertyService:
@@ -22,6 +22,46 @@ class PropertyService:
             return {"error": "No properties found"}, 404
 
         return [property.to_dict() for property in properties], 200
+    
+    @staticmethod
+    def update_property(property_id, property_data, token):
+        
+        user_information = PropertyService.verify_token(token)
+
+        if "error" in user_information:
+            return user_information, 403
+        
+        property = Property.query.get(property_id)
+        if not property:
+            return {"error": "Property not found"}, 404
+        
+        if property.owner_id != user_information.get("id"):
+            return {"error": "You do not have permission to update this property"}, 403
+        
+        if "name" in property_data:
+            property.name = property_data.get("name", property.name)
+        if "description" in property_data:
+            property.description = property_data.get("description", property.description)
+        if "type" in property_data:        
+            property.type = property_data.get("type", property.type)
+        if "city" in property_data:
+            property.city = property_data.get("city", property.city)
+        if "rooms" in property_data:
+            property.rooms = property_data.get("rooms", property.rooms)
+
+        db.session.commit()
+        return property.to_dict(), 200
+    
+    @staticmethod
+    def verify_token(token):
+        user_service_url = f"http://auth_service:5002/auth/verify"
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.get(user_service_url, headers=headers)
+        if response.status_code == 200:
+            print(f"Token verified successfully: {response.json()}", flush=True)
+            response_data = response.json()
+            return response_data.get("user", {})
+        return {"error": "Token invalid"}
 
     @staticmethod
     def get_user_city(user_id):
