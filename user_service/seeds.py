@@ -1,6 +1,6 @@
 from app import create_app
 from models.user import User
-from extensions import db
+from models.db import db
 from werkzeug.security import generate_password_hash
 
 app = create_app()

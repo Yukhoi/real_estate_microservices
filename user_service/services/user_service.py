@@ -1,6 +1,6 @@
 from models.user import User
 from flask import current_app
-from extensions import db
+from models.db import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import pika
 import json
