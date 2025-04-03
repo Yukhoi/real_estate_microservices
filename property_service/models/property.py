@@ -8,8 +8,8 @@ class Property(db.Model):
     description = db.Column(db.Text)
     property_type = db.Column(db.String(50), nullable=False)
     city = db.Column(db.String(50), nullable=False)
-    rooms = db.Column(db.Integer, nullable=False)
     owner_id = db.Column(db.Integer, nullable=False)  
+    rooms = db.relationship("Room", backref="property", cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
@@ -18,6 +18,6 @@ class Property(db.Model):
             "description": self.description,
             "property_type": self.property_type,
             "city": self.city,
-            "rooms": self.rooms,
             "owner_id": self.owner_id,
         }
+

@@ -1,6 +1,8 @@
 import requests
 from models.property import Property
+from models.room import Room
 from models.db import db
+from sqlalchemy.orm import joinedload
 
 
 class PropertyService:
@@ -17,12 +19,18 @@ class PropertyService:
             if status_code != 200:
                 return {"error": "Failed to bind city"}, 500
 
-        properties = Property.query.filter_by(city=city).all()
+        properties = Property.query.options(joinedload(Property.rooms)).filter_by(city=city).all()
         if not properties:
             return {"error": "No properties found"}, 404
 
-        return [property.to_dict() for property in properties], 200
-    
+        result = []
+        for property in properties:
+            property_dict = property.to_dict()
+            property_dict["rooms"] = [room.to_dict() for room in property.rooms]
+            result.append(property_dict)
+
+        return result, 200
+        
     @staticmethod
     def update_property(property_id, property_data, token):
         
