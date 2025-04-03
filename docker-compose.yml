@@ -24,9 +24,21 @@ services:
       - "5001:5001"
     environment:
       - RABBITMQ_HOST=rabbitmq
-      - DATABASE_URL=postgresql://username:password@postgres:5432/database_name
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/user_db
     depends_on:
       - rabbitmq
+      - postgres
+    restart: always
+
+  property_service:
+    build:
+      context: ./property_service
+    container_name: property_service
+    ports:
+      - "5003:5003"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/property_db
+    depends_on:
       - postgres
     restart: always
 
@@ -54,11 +66,11 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: user_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d/ 
 
 volumes:
   redis_data:
